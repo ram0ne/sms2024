@@ -1,0 +1,149 @@
+#!/usr/bin/env bash
+
+sms_="/opt/lampp/htdocs/sms/sms.php"
+sms2="/opt/lampp/htdocs/sms/"
+
+
+#CORES
+red="\033[31m"
+green="\033[32m"
+bgreen="\033[32;1m"
+fff="\033[m"
+#========================================
+
+function banner(){
+echo '
+  ____ ___  _   _ ____   ____ ___ _____ _   _  ____ _____ 
+ / ___/ _ \| \ | / ___| / ___|_ _| ____| \ | |/ ___| ____|
+| |  | | | |  \| \___ \| |    | ||  _| |  \| | |   |  _|  
+| |__| |_| | |\  |___) | |___ | || |___| |\  | |___| |___ 
+ \____\___/|_| \_|____/ \____|___|_____|_| \_|\____|_____|
+                                                          
+'
+
+}
+
+#INCIANDO XAMPP
+
+if /opt/lampp/xampp status | grep -q "not"; then
+ echo -e "${green}INICIANDO XAMPP${fff}"
+ /opt/lampp/xampp start
+else
+  echo -e "${green}XAMP EM EXECUÇÃO...\nApache OK\nMySQL OK\nProFTPD OK${fff}"
+fi
+
+
+#=================================================
+function sms(){
+	read -p "Destinatario(DDD+Numero): " destino
+	sed -i "s/dest0/$destino/" $sms_
+	echo -e "Ok..." ; sleep 1s
+	
+	read -p "Mensagem: " mensagem
+	sed -i "s/msg0/$mensagem/" $sms_
+	echo -e "${green}Enviando...${fff}" ; sleep 3s
+	
+	if curl 127.0.0.1/sms/sms.php;then
+	echo -e "${bgreen}SMS ENVIADO COM SUCESSO PARA ${destino} ${fff}"
+	sed -i "s/$mensagem/msg0/" $sms_
+	sed -i "s/$destino/dest0/" $sms_
+	else
+	echo -e "${bred}Erro, operação não concluida!!!${fff}"
+	fi
+}
+
+function localfile(){
+if [[ -d $sms2 ]];then
+	rm -rf $sms2
+	mkdir $sms2
+	cp -r facilitamovelsms.php sms.php $sms2
+else
+	mkdir $sms2
+	echo -e "${green}Criando arquivos em php em ${sms2} ...${fff}"
+	cp -r facilitamovelsms.php sms.php $sms2
+fi
+}
+
+function helping(){
+cat <<EOF
+	-h		VER AJUDA
+	-c		ABRIR SITE DE CADASTRO FACILITAMOVEL
+
+	(Execute o xampp/apache.)
+	1) chmod 777 autosms
+	2) ./autosms
+	3) Usar conta atual ou add nova conta.
+	4) Colocar destinatario.
+	5) Plaaau
+	
+	Versão: 1.0 - 2021
+	Criado por: R4m0n3
+	UZICODE BRASIL (c) 
+
+	www.github.com/ram0ne
+EOF
+}
+
+function userpass(){
+
+	read -p "Usuario: " _user
+	read -s -p "Senha: " _pass
+	echo " "
+	echo -e "${green}Salvando...${fff}"
+	sleep 2s
+	
+	sed -i "s/user0/$_user/" $sms_
+	sed -i "s/pass0/$_pass/" $sms_
+}
+
+#INCIANDO======================================
+
+if [[ $1 == "-h" ]];then
+	helping
+	banner
+	exit 0
+elif [[ $1 == "-c" ]];then
+firefox "https://www.facilitamovel.com.br/loginsite.ft?utm_campaign=botao_conta&utm_source=pagina_inicial&utm_medium=pagina_inicial"
+exit 0
+fi
+
+banner	#Banner
+sleep 3s ; clear
+
+echo -e "${green}Lendo arquivos php...${fff}"
+localfile	#FUNÇÃO ARQUIVOS
+sleep 1s
+#===============================================
+
+echo -e "${green}Faça login com sua conta FACILITA...${fff}"
+sleep 1s
+
+userpass	#FUNÇÃO CONTA
+sleep 1s
+
+clear
+
+sms	#FUNÇÃO ENVIO
+
+#==============================================
+
+
+#PARAMETROS INATIVOS===========================
+#[ $1 == "-f" ]];then
+#	localfile	#Criar arquivos php
+
+#elif [[ $1 == "-l" ]];then
+#	userpass	#Login e Senha
+	
+
+#elif [[ $1 == "-e" ]];then
+#	sms	#Envio de sms
+	
+#elif [[ $1 == "-h" ]];then
+#	helping	#Ajuda
+
+#elif [[ $1 == "--satanas" ]];then
+#	satanas	#Modo satan
+#fi
+#=============================================
+
