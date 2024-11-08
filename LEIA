@@ -1,7 +1,15 @@
-Cadastre: https://www.facilitamovel.com.br/loginsite.ft?utm_campaign=botao_conta&utm_source=pagina_inicial&utm_medium=pagina_inicial
+	-h		VER AJUDA.
+	-c		ABRIR SITE DE CADASTRO FACILITAMOVEL.
 
-primeiro chmod 777 autosms
-segundo ./autosms
-Siga as etapas na tela e plaaaaaaaaaaau
+	Caso não execute automaticamente, inicie o xampp manualmente.
+	
+	1) chmod 777 autosms.
+	2) ./autosms.
+	3) Adicionar conta facilitamovel e senha.
+	4) Colocar destinatario ex: (17) 0000-0000.
+	5) Run!!
+	
+	Versão: 2.0 - 2024
+	Criado por: R4m0n3
 
-./autosms -h para ver ajuda!!!!!!!
+	www.github.com/ram0ne
